@@ -10,7 +10,7 @@ $db['dbname'] = "loginManagement";  // データベース名
 
 // エラーメッセージ、登録完了メッセージの初期化
 $errorMessage = "";
-$SignUpMessage = "";
+$signUpMessage = "";
 
 // ログインボタンが押された場合
 if (isset($_POST["signUp"])) {
@@ -23,7 +23,7 @@ if (isset($_POST["signUp"])) {
 		$errorMessage = 'パスワードが未入力です。';
 	}
 
-	if (!empty($_POST["username"]) && !empty($_POST["password"]) && !empty($_POST["password2"]) && $_POST["password"] == $_POST["password2"]) {
+	if (!empty($_POST["username"]) && !empty($_POST["password"]) && !empty($_POST["password2"]) && $_POST["password"] === $_POST["password2"]) {
 		// 入力したユーザIDとパスワードを格納
 		$username = $_POST["username"];
 		$password = $_POST["password"];
@@ -40,7 +40,7 @@ if (isset($_POST["signUp"])) {
 			$stmt->execute(array($username, password_hash($password, PASSWORD_DEFAULT)));  // 今回は文字列のみなのでbindValue(変数の内容が変わらない)を使用せず、直接excuteに渡す  // パスワードはちゃんとハッシュ化を行う
 			$userid = $pdo->lastinsertid();  // 登録した(DB側でauto_incrementした)IDを$useridに入れる
 
-			$SignUpMessage = '登録が完了しました。あなたの登録IDは '. $userid. ' です。パスワードは '. $password. ' です。';  // ログイン時に使用する、登録したIDとパスワードを表示
+			$signUpMessage = '登録が完了しました。あなたの登録IDは '. $userid. ' です。パスワードは '. $password. ' です。';  // ログイン時に使用する、登録したIDとパスワードを表示
 		} catch (PDOException $e) {
 			$errorMessage = 'データベースエラー';
 			// $e->getMessage() でエラー内容を参照可能（デバック時のみ表示）
@@ -77,13 +77,11 @@ MAMPのphpMyAdmin内
 	</head>
 	<body>
 		<h1>新規登録画面</h1>
-		<!-- $_SERVER['PHP_SELF']はXSSの危険性があるので、actionは空にしておく -->
-		<!-- <form id="loginForm" name="loginForm" action="<?php print($_SERVER['PHP_SELF']) ?>" method="POST"> -->
 		<form id="loginForm" name="loginForm" action="" method="POST">
 			<fieldset>  <!-- fieldsetはグループ化してくれる(線で囲ってくれる) -->
 				<legend>新規登録フォーム</legend>  <!-- グループの先頭には、<LEGEND>～</LEGEND>で入力項目グループにタイトルをつけます。 -->
-				<div><font color="#ff0000"><?php echo $errorMessage ?></font></div>
-				<div><font color="#0000ff"><?php echo $SignUpMessage ?></font></div>
+				<div><font color="#ff0000"><?php echo htmlspecialchars($errorMessage, ENT_QUOTES); ?></font></div>
+				<div><font color="#0000ff"><?php echo htmlspecialchars($signUpMessage, ENT_QUOTES); ?></font></div>
 				<label for="username">ユーザー名</label><input type="text" id="username" name="username" placeholder="ユーザー名を入力" value="<?php if (!empty($_POST["username"])) {echo htmlspecialchars($_POST["username"], ENT_QUOTES);} ?>">  <!-- 初回起動はユーザー名空白にして、２回目以降はPOST送信したユーザー名が保存されている。 -->
 				<br>
 				<label for="password">パスワード</label><input type="password" id="password" name="password" value="" placeholder="パスワードを入力">
