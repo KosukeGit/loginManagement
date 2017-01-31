@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-if (isset($_SESSION["USERID"])) {
+if (isset($_SESSION["NAME"])) {
 	$errorMessage = "ログアウトしました。";
 } else {
 	$errorMessage = "セッションがタイムアウトしました。";
@@ -23,7 +23,7 @@ $_SESSION = array();
 	</head>
 	<body>
 		<h1>ログアウト画面</h1>
-		<div><?php echo $errorMessage; ?></div>
+		<div><?php echo htmlspecialchars($errorMessage, ENT_QUOTES); ?></div>
 		<ul>
 			<li><a href="Login.php">ログイン画面に戻る</a></li>
 		</ul>
