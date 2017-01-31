@@ -44,12 +44,13 @@ if (isset($_POST["login"])) {
 					session_regenerate_id(true);
 
 					// 入力したIDのユーザー名を取得
-					$sql = "SELECT * FROM userData WHERE id = $userid";  //入力した$useridのユーザー名を取得
+					$id = $row['id'];
+					$sql = "SELECT * FROM userData WHERE id = $id";  //入力したIDからユーザー名を取得
 					$stmt = $pdo->query($sql);
 					foreach ($stmt as $row) {
 						$row['name'];  // ユーザー名
 					}
-					$_SESSION["USERID"] = $row['name'];
+					$_SESSION["NAME"] = $row['name'];
 					header("Location: Main.php");  // メイン画面へ遷移
 					exit();  // 処理終了
 				} else {
@@ -96,12 +97,10 @@ MAMPのphpMyAdmin内
 	</head>
 	<body>
 		<h1>ログイン画面</h1>
-		<!-- $_SERVER['PHP_SELF']はXSSの危険性があるので、actionは空にしておく -->
-		<!-- <form id="loginForm" name="loginForm" action="<?php print($_SERVER['PHP_SELF']) ?>" method="POST"> -->
 		<form id="loginForm" name="loginForm" action="" method="POST">
 			<fieldset>  <!-- fieldsetはグループ化してくれる(線で囲ってくれる) -->
 				<legend>ログインフォーム</legend>  <!-- グループの先頭には、<LEGEND>～</LEGEND>で入力項目グループにタイトルをつけます。 -->
-				<div><font color="#ff0000"><?php echo $errorMessage ?></font></div>
+				<div><font color="#ff0000"><?php echo htmlspecialchars($errorMessage, ENT_QUOTES); ?></font></div>
 				<label for="userid">ユーザーID</label><input type="text" id="userid" name="userid" placeholder="ユーザーIDを入力" value="<?php if (!empty($_POST["userid"])) {echo htmlspecialchars($_POST["userid"], ENT_QUOTES);} ?>">  <!-- 初回起動はユーザーID空白にして、２回目以降はPOST送信したユーザーIDが保存されている。 -->
 				<br>
 				<label for="password">パスワード</label><input type="password" id="password" name="password" value="" placeholder="パスワードを入力"> <!-- プレースホルダーは入力欄に薄く文字を表示させるもの -->
