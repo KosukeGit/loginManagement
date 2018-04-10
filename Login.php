@@ -25,7 +25,7 @@ if (isset($_POST["login"])) {
 		$userid = $_POST["userid"];
 
 		// 2. ユーザIDとパスワードが入力されていたら認証する
-		$dsn = sprintf('mysql: host=%s; dbname=%s; charset=utf8', $db['host'], $db['dbname']);
+		$dsn = sprintf('mysql:host=%s;dbname=%s;charset=utf8', $db['host'], $db['dbname']);
 
 		// 3. エラー処理
 		try {
